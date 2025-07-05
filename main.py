@@ -81,7 +81,7 @@ class AfkMonitoringApp:
                 pyautogui.keyUp(']')
                 break
             else:
-                sleep(min(afk_time, MAX_POLLING_TIME))
+                sleep(min(afk_time - idle_time_seconds, MAX_POLLING_TIME))
         
         self.thread = None
         self.deactivate_monitoring()
