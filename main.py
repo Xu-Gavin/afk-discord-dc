@@ -18,7 +18,7 @@ def _get_idle_time_seconds() -> int:
 class AfkMonitoringApp:
     def __init__(self, root: tk.Tk):
         # Setup root
-        root.title("AFK Kicker Application")
+        root.title("Discord AFK Auto Kicker")
         root.geometry("300x200")
         self.title_text = tk.StringVar(value="AFK Monitoring Idle")
         label = tk.Label(root, textvariable=self.title_text)
