@@ -4,6 +4,7 @@ import pyautogui
 import tkinter as tk
 
 MAX_POLLING_TIME = 600
+MIN_POLLING_TIME = 1
 
 
 def _get_idle_time_seconds() -> int:
@@ -78,7 +79,11 @@ class AfkMonitoringApp:
             pyautogui.keyUp(']')
             self.deactivate_monitoring()
         else:
-            delay = min(afk_time - idle_time_seconds, MAX_POLLING_TIME) * 1000
+            next_poll = afk_time - idle_time_seconds
+            delay = max(
+                MIN_POLLING_TIME,
+                min(MAX_POLLING_TIME, next_poll)
+            ) * 1000
             self.root.after(delay, self.schedule_afk_check, afk_time)
 
 
