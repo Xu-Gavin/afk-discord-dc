@@ -9,5 +9,5 @@ In Discord settings, create a keybind and set "Disconnect From Voice Channel" to
 ## To Build
 Use `pyinstaller` to build: 
 ```
-pyinstaller --windowed --icon=assets/icon.png --onefile --add-data "assets/icon.png;assets" afk-discord-dc.py
+pyinstaller --windowed --icon=assets/icon.ico --onefile --add-data "assets/icon.png;assets" afk-discord-dc.py
 ```
