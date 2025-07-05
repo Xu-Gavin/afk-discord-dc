@@ -57,7 +57,7 @@ class AfkMonitoringApp:
 
     def deactivate_monitoring(self) -> None:
         if self.thread is not None:
-            self.stop_flag.set()
+            if self.stop_flag is not None: self.stop_flag.set()
             self.thread = None
 
         self.title_text.set("AFK Monitoring Idle")
