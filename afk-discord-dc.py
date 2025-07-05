@@ -1,7 +1,9 @@
-from time import sleep
-import win32api
+import os
 import pyautogui
+import sys
+from time import sleep
 import tkinter as tk
+import win32api
 
 MAX_POLLING_TIME = 600
 MIN_POLLING_TIME = 1
@@ -17,12 +19,20 @@ def _get_idle_time_seconds() -> int:
     return (current_tick_count - last_input_tick_count) // 1000
 
 
+def _resource_path(relative_path: str) -> str:
+    """Get the absolute path to a resource, works for dev and PyInstaller."""
+    if hasattr(sys, '_MEIPASS'):
+        # PyInstaller stores files in a temporary folder (_MEIPASS)
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
+
+
 class AfkMonitoringApp:
     def __init__(self, root: tk.Tk):
         # Setup root
         root.title("Discord AFK Auto Kicker")
         root.geometry("300x200")
-        icon = tk.PhotoImage(file="assets/icon.png")
+        icon = tk.PhotoImage(file=_resource_path("assets/icon.png"))
         root.iconphoto(True, icon)
         self.title_text = tk.StringVar(value="AFK Monitoring Idle")
         label = tk.Label(root, textvariable=self.title_text)
