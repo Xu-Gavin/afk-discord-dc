@@ -22,7 +22,7 @@ class AfkMonitoringApp:
         # Setup root
         root.title("Discord AFK Auto Kicker")
         root.geometry("300x200")
-        icon = tk.PhotoImage(file="Screenshot_2025-01-03_202415.png")
+        icon = tk.PhotoImage(file="assets/icon.png")
         root.iconphoto(True, icon)
         self.title_text = tk.StringVar(value="AFK Monitoring Idle")
         label = tk.Label(root, textvariable=self.title_text)
