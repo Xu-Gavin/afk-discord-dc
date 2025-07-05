@@ -2,7 +2,6 @@ from time import sleep
 import win32api
 import pyautogui
 import tkinter as tk
-import threading
 
 MAX_POLLING_TIME = 600
 
@@ -39,8 +38,6 @@ class AfkMonitoringApp:
 
         # Global & State Variables
         self.root = root
-        self.thread: threading.Thread | None = None
-        self.stop_flag: threading.Event | None = None
         self.monitoring_active: tk.BooleanVar = tk.BooleanVar(value=False)
 
     def activate_monitoring(self) -> None:
@@ -53,21 +50,10 @@ class AfkMonitoringApp:
             self.root.after(1000, lambda: self.title_text.set(old_txt))
         else:
             self.title_text.set("AFK Monitoring Active")
-            self.stop_flag = threading.Event()
-            self.thread = threading.Thread(
-                target=self.start_afk_monitoring,
-                args=[self.stop_flag, afk_time_int]
-            )
-            self.thread.daemon = True
-            self.thread.start()
             self.monitoring_active.set(True)
+            self.schedule_afk_check(afk_time_int)
 
     def deactivate_monitoring(self) -> None:
-        if self.thread is not None:
-            if self.stop_flag is not None:
-                self.stop_flag.set()
-            self.thread = None
-
         self.title_text.set("AFK Monitoring Idle")
         self.monitoring_active.set(False)
 
@@ -77,23 +63,23 @@ class AfkMonitoringApp:
         else:
             self.activate_monitoring()
 
-    def start_afk_monitoring(
-            self, stop_flag: threading.Event, afk_time: int) -> None:
-        while not stop_flag.is_set():
-            # Calculate values
-            idle_time_seconds = _get_idle_time_seconds()
-            if idle_time_seconds > afk_time:
-                pyautogui.keyDown('[')
-                pyautogui.keyDown(']')
-                sleep(1)
-                pyautogui.keyUp('[')
-                pyautogui.keyUp(']')
-                break
-            else:
-                sleep(min(afk_time - idle_time_seconds, MAX_POLLING_TIME))
+    def schedule_afk_check(self, afk_time: int) -> None:
+        if not self.monitoring_active.get():
+            return
 
-        self.thread = None
-        self.deactivate_monitoring()
+        # Calculate values
+        print(afk_time)
+        idle_time_seconds = _get_idle_time_seconds()
+        if idle_time_seconds > afk_time:
+            pyautogui.keyDown('[')
+            pyautogui.keyDown(']')
+            sleep(1)
+            pyautogui.keyUp('[')
+            pyautogui.keyUp(']')
+            self.deactivate_monitoring()
+        else:
+            delay = min(afk_time - idle_time_seconds, MAX_POLLING_TIME) * 1000
+            self.root.after(delay, self.schedule_afk_check, afk_time)
 
 
 if __name__ == "__main__":
