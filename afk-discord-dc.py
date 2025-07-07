@@ -81,7 +81,6 @@ class AfkMonitoringApp:
             return
 
         # Calculate values
-        print(afk_time)
         idle_time_seconds = _get_idle_time_seconds()
         if idle_time_seconds > afk_time:
             pyautogui.keyDown('[')
